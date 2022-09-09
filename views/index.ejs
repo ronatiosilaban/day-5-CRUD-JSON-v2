@@ -1,23 +1,29 @@
-<!DOCTYPE html>
-<html lang="en">
+<h1 style="margin-top: 30px;">Web Server Node Js <%= nama %></h1>
+<h2>Welcome to my App</h2>
+<h5>List Contact :</h5>
+<% if(cont.length<1){ %> 
+    <p>Contact data is empty</p>
+    <% }else{ %> 
 
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><%= title %> </title>
-</head>
 
-<body>
-    <h1>Links</h1>
-    <ul>
-        <li><a href="/">Home</a></li>
-        <li><a href="/about">About</a></li>
-        <li><a href="/contact">Contact</a></li>
-    </ul>
-
-    <h1>Web Server Node Js <%= nama %></h1>
-    <p>Welcome to my App</p>
-</body>
-
-</html>
+        
+        <div class="d-grid gap-3 border-success" >
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th scope="col">Name</th>
+                        <th scope="col">Email</th>
+                        
+                    </tr>
+                </thead>
+                <tbody>
+            <% cont.forEach(c => { %>
+          <tr>
+            <td><%= c.name %></td>
+            <td><%= c.email %></td>
+          </tr>
+          <% }) %>
+          
+        </tbody>
+      </table>
+<% } %> 

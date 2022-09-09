@@ -41,21 +41,49 @@ const express = require('express')
 const app = express()
 var router = express.Router()
 const port = 3000
-
+const expressLayouts = require('express-ejs-layouts')
 app.set('view engine', 'ejs')
 
+app.use(expressLayouts);
+
+
 app.get('/', (req, res) => {
+    cont =[
+        {
+            name:'DANI',
+            email:'dani@gmail.com'
+        },
+        {
+            name:'Rona',
+            email:'rona@gmail.com'
+        },
+        {
+            name:'Arya',
+            email:'arya@gmail.com'
+        },
+        {
+            name:'Adrian',
+            email:'adrian@gmail.com'
+        },
+    ]
     res.render("index", {
         nama:'ronatio',
-        title : "web express"
+        title : "web express",
+        layout:"layout/main",
+        cont,
     })
 
 })
 app.get('/about', (req, res) => {
-    res.render("about")
+    res.render("about",{
+        layout:"layout/main2"
+    })
 })
 app.get('/contact', (req, res) => {
-    res.render("contact")
+    res.render("contact",{
+        layout:"layout/main3"
+    })
+ 
 })
 app.get('/product/id', (req, res) => {
     res.send('product id :'+id +" "+ 'categori='+req.query.categori)
