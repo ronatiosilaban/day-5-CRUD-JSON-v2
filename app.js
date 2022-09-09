@@ -42,16 +42,26 @@ const app = express()
 var router = express.Router()
 const port = 3000
 
-app.get('/', (req, res) => {
+app.set('view engine', 'ejs')
 
-    res.sendFile(__dirname + '/index.html')
+app.get('/', (req, res) => {
+    res.render("index", {
+        nama:'ronatio',
+        title : "web express"
+    })
+
 })
 app.get('/about', (req, res) => {
-    res.sendFile(__dirname + '/about.html')
+    res.render("about")
 })
 app.get('/contact', (req, res) => {
-    res.sendFile(__dirname + '/contact.html')
+    res.render("contact")
 })
+app.get('/product/id', (req, res) => {
+    res.send('product id :'+id +" "+ 'categori='+req.query.categori)
+})
+
+
 app.use('/', (req, res) => {
     res.status(404)
     res.send('Page Not Found : 404')
