@@ -41,11 +41,8 @@ const express = require('express')
 const app = express()
 var router = express.Router()
 const port = 3000
-const expressLayouts = require('express-ejs-layouts')
+
 app.set('view engine', 'ejs')
-
-app.use(expressLayouts);
-
 
 app.get('/', (req, res) => {
     cont =[
@@ -69,20 +66,15 @@ app.get('/', (req, res) => {
     res.render("index", {
         nama:'ronatio',
         title : "web express",
-        layout:"layout/main",
         cont,
     })
 
 })
 app.get('/about', (req, res) => {
-    res.render("about",{
-        layout:"layout/main2"
-    })
+    res.render("about")
 })
 app.get('/contact', (req, res) => {
-    res.render("contact",{
-        layout:"layout/main3"
-    })
+    res.render("contact")
  
 })
 app.get('/product/id', (req, res) => {
