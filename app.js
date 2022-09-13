@@ -115,54 +115,52 @@ app.post('/add', [
 })
 
 
-app.post('/contact/update',[
+app.post('/update/:name', [
  
-    body('name').custom((value,{req}) => {
+ body('nama').custom((value, { req }) => {
       const duplikat = cekDuplikat(value);
-      if (value !== req.body.oldname && duplikat) {
-        throw new Error('Data already used!');
+      if (value !== req.body.oldNama && duplikat) {
+          throw new Error('Nama sudah terdaftar!');
       }
       return true;
-    }),
+  }),
 
-    check('email', 'Email doesnt valid!').isEmail(),
+  check('email', 'Email doesnt valid!').isEmail(),
 
-   
-  ],
-  (req, res) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-        res.render('add', {
-          isActive: 'home',
-          layout: 'layout/add',
-          title: 'Form tambah Contact',
-          errors: errors.array(),
-          contact: req.body
-        });
-      } else {
-    const username = req.params.name
-   
-    const existUsers = getUserData()
-    const data = req.body
+ 
+],
+(req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+      res.render('add', {
+        isActive: 'home',
+        layout: 'layout/add',
+        title: 'Form tambah Contact',
+        errors: errors.array(),
+      });
+    } else {
+  const username = req.params.name
+  //get the update data
+  const existUsers = getUserData()
+  const data = req.body
+  //get the existing user data
+  const userData = JSON.stringify(data)
 
-    const userData = JSON.stringify(data)
 
+  const findExist = existUsers.find( user => user.name === username )
 
-    const findExist = existUsers.find( user => user.name === username )
-    console.log('log',username);
-    
-    if (!findExist) {
-        return res.status(409).send({error: true, msg: 'username not exist'})
-    }
   
-    const updateUser = existUsers.filter( user => user.name !== username )
-
-    datass = JSON.parse(userData)  
-    updateUser.push(datass)
-
-    saveUserData(updateUser)
-  
-   res.redirect('/')
+  if (!findExist) {
+      return res.status(409).send({error: true, msg: 'username not exist'})
+  }
+  //filter the userdata
+  const updateUser = existUsers.filter( user => user.name !== username )
+  //push the updated data
+  datass = JSON.parse(userData)  
+  updateUser.push(datass)
+  //finally save it
+  saveUserData(updateUser)
+  res.redirect('/')
 }
 })
 
@@ -205,11 +203,15 @@ app.get('/contact', (req, res) => {
 })
 
 
-app.get('/contact/edit/:name', (req, res) => {
+app.get('/edit/:name/:email', (req, res) => {
     const contact = findContact(req.params.nama);  
+    const name = req.params.name
+    const email=req.params.email
     res.render("edit",{
         layout:'layout/edit',
-        contact
+        contact,
+        name,
+        email
        
     })
 })
