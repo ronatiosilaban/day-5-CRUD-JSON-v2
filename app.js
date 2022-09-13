@@ -8,11 +8,19 @@ app.use(express.json())
 const fs = require('fs')
 app.use(expressLayouts);
 app.set('view engine', 'ejs')
+const flash = require('connect-flash');
 const { body, check, validationResult } = require('express-validator');
 
 const validator = require('validator');
 app.use(express.urlencoded({extended:false}));
-   
+const updateContact = (contactBaru) => {
+  const contacts = getUserData();
+  //hilangkan contact lama yang namanya sama dengan oldname
+  const filteredContacts = contacts.filter((contact) => contact.nama !== contactBaru.oldname);
+  delete contactBaru.oldname;
+  filteredContacts.push(contactBaru);
+  saveUserData(filteredContacts);
+};
 const folder = './data'
 const filepath = "./data/db.json";
 
@@ -115,54 +123,80 @@ app.post('/add', [
 })
 
 
-app.post('/update/:name', [
+// app.post('/update/:name', [
  
- body('nama').custom((value, { req }) => {
+//  body('nama').custom((value, { req }) => {
+//       const duplikat = cekDuplikat(value);
+//       if (value !== req.body.oldname && duplikat) {
+//           throw new Error('Nama sudah terdaftar!');
+//       }
+//       return true;
+//   }),
+
+//   check('email', 'Email doesnt valid!').isEmail(),
+
+ 
+// ],
+// (req, res) => {
+//   const errors = validationResult(req);
+//   if (!errors.isEmpty()) {
+//       res.render('add', {
+//         isActive: 'home',
+//         layout: 'layout/add',
+//         title: 'Form tambah Contact',
+//         errors: errors.array(),
+//       });
+//     } else {
+//   const username = req.params.name
+//   //get the update data
+//   const existUsers = getUserData()
+//   const data = req.body
+//   //get the existing user data
+//   const userData = JSON.stringify(data)
+
+
+//   const findExist = existUsers.find( user => user.name === username )
+
+  
+//   if (!findExist) {
+//       return res.status(409).send({error: true, msg: 'username not exist'})
+//   }
+//   //filter the userdata
+//   const updateUser = existUsers.filter( user => user.name !== username )
+//   //push the updated data
+//   datass = JSON.parse(userData)  
+//   updateUser.push(datass)
+//   //finally save it
+//   saveUserData(updateUser)
+//   res.redirect('/')
+// }
+// })
+
+app.post('/contact/update', [
+  body('nama').custom((value, { req }) => {
       const duplikat = cekDuplikat(value);
-      if (value !== req.body.oldNama && duplikat) {
+      if (value !== req.body.oldname && duplikat) {
           throw new Error('Nama sudah terdaftar!');
       }
       return true;
   }),
+  check('email', 'Email tidak valid!').isEmail(),
 
-  check('email', 'Email doesnt valid!').isEmail(),
-
- 
-],
-(req, res) => {
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-      res.render('add', {
-        isActive: 'home',
-        layout: 'layout/add',
-        title: 'Form tambah Contact',
-        errors: errors.array(),
-      });
-    } else {
-  const username = req.params.name
-  //get the update data
-  const existUsers = getUserData()
-  const data = req.body
-  //get the existing user data
-  const userData = JSON.stringify(data)
-
-
-  const findExist = existUsers.find( user => user.name === username )
-
-  
-  if (!findExist) {
-      return res.status(409).send({error: true, msg: 'username not exist'})
-  }
-  //filter the userdata
-  const updateUser = existUsers.filter( user => user.name !== username )
-  //push the updated data
-  datass = JSON.parse(userData)  
-  updateUser.push(datass)
-  //finally save it
-  saveUserData(updateUser)
-  res.redirect('/')
-}
-})
+  ], (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        res.render('edit', {
+            title: "ExpressJS",
+            layout: "layout/edit",
+            errors: errors.array(),
+            contact: req.body,
+        });
+    } else{
+        updateContact(req.body);
+        // req.send('msg', 'Berhasil Mengupdate Data!');
+        res.redirect('/');
+    }
+});
 
 app.get('/delete/:name', (req, res) => {
     const name = req.params.name
@@ -203,18 +237,14 @@ app.get('/contact', (req, res) => {
 })
 
 
-app.get('/edit/:name/:email', (req, res) => {
-    const contact = findContact(req.params.nama);  
-    const name = req.params.name
-    const email=req.params.email
+app.get('/contact/edit/:nama', (req, res) => {
+  const contact = findContact(req.params.name);
     res.render("edit",{
         layout:'layout/edit',
-        contact,
-        name,
-        email
-       
+        contact, 
     })
 })
+
 app.get('/add', (req, res) => {
     res.render("add",{
         layout:'layout/add',

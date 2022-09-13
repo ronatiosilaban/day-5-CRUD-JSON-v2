@@ -13,15 +13,16 @@
     <h2>Hallo This is Page Contacts</h2>
   </div>
   <div>
-    <form action="/update/<%= name %>  " method="post">
+    <form action="/contact/update" method="post">
+      <input name="oldname" type="hidden" value="<%= contact.oldname || contact.name %>" placeholder="name" class="form-control"/>
        
         <div class="input-group mb-3">
         <span class="input-group-text" id="basic-addon1">Name :</span>
-      <input name="name" type="text" value="<%= name %>" placeholder="name" class="form-control"/>
+      <input name="name" type="text" value="<%= contact.name %>" placeholder="name" class="form-control"/>
       </div>
       <div class="input-group mb-3">
       <span class="input-group-text" id="basic-addon1">Email :</span>
-      <input name="email" type="email" value="<%= email %>" placeholder="email" class="form-control"/>
+      <input name="email" type="email" value="<%= contact.email %>" placeholder="email" class="form-control"/>
     </div>
       <button type="submit" class="btn btn-success">Submit</button>
     </form>
